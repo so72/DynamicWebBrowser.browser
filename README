@@ -18,9 +18,9 @@ The Protocols:
     - Has execute method that takes URI as parameter
     - returns an HTML string
     - http - located in the browser project (don't dynamically load it)
-    - time - simple
+    - ~~time - simple~~
 
 The Server part:
-    - Needs to respond to 'CLASS' and 'GET' requests
-    - Just serves class files
-    - Protocols are implemented here (except for http)
+    - ~~Needs to respond to 'CLASS' and 'GET' requests~~
+    - ~~Just serves class files~~
+    - ~~Protocols are implemented here (except for http)~~
