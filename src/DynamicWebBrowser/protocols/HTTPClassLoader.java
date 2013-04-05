@@ -50,29 +50,7 @@ public class HTTPClassLoader extends ClassLoader {
         byte[] bytes = loadClassData(protocolName);
         
         if (bytes != null) {
-            try {
-                return defineClass(null, bytes, 0, bytes.length);
-            } catch (ClassFormatError e) {
-                FileOutputStream os = null;
-                try {
-                    File out = new File("Time.class1");
-                    os = new FileOutputStream(out);
-                    os.write(bytes);
-                    System.out.println("Error: ");
-                    System.out.println(new String(bytes, 0, bytes.length));
-                    return null;
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(HTTPClassLoader.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                } finally {
-                    try {
-                        os.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(HTTPClassLoader.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    return null;
-                }
-            }
+            return defineClass(null, bytes, 0, bytes.length);
         } else {
             return null;
         }
