@@ -1,6 +1,10 @@
 package DynamicWebBrowser.protocols;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,6 +13,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -44,7 +50,29 @@ public class HTTPClassLoader extends ClassLoader {
         byte[] bytes = loadClassData(protocolName);
         
         if (bytes != null) {
-            return defineClass(null, bytes, 0, bytes.length);
+            try {
+                return defineClass(null, bytes, 0, bytes.length);
+            } catch (ClassFormatError e) {
+                FileOutputStream os = null;
+                try {
+                    File out = new File("Time.class1");
+                    os = new FileOutputStream(out);
+                    os.write(bytes);
+                    System.out.println("Error: ");
+                    System.out.println(new String(bytes, 0, bytes.length));
+                    return null;
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(HTTPClassLoader.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                } finally {
+                    try {
+                        os.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(HTTPClassLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    return null;
+                }
+            }
         } else {
             return null;
         }
@@ -65,15 +93,6 @@ public class HTTPClassLoader extends ClassLoader {
         }
         
         sendClassRequest(className);
-        
-        // Warning: Terrible hack ahead
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            System.err.println("Sleep interrupted!");
-        }
-        // End terrible hack zone
-        
         byte[] classFileBytes = readResponse();
         
         String classFile;
@@ -105,15 +124,6 @@ public class HTTPClassLoader extends ClassLoader {
         System.out.println("Asking for: " + classFile);
         
         sendGetRequest(classFile);
-        
-        // Warning: Terrible hack ahead
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            System.err.println("Sleep interrupted!");
-        }
-        // End terrible hack zone
-        
         bytes = readResponse();
         
         try {
@@ -147,19 +157,21 @@ public class HTTPClassLoader extends ClassLoader {
         byte[] bytes = null;
         
         try {
-            
-            // create a buffer big enough to fit large responses
-            byte[] buffer = new byte[10000];
-            
-            int result = inputStream.read(buffer, 0, buffer.length);
-            if (result == -1) {
-                System.err.println("Failed to read input!");
-                System.exit(1);
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[4096];
+            int totalSize = 1;
+            while (true) {
+                int bufSize = inputStream.read(buffer);
+                totalSize += bufSize;
+                if (bufSize < 0) break;
+                byteOutputStream.write(buffer, 0, bufSize);
             }
+            buffer = byteOutputStream.toByteArray();
             
             // Get the actual result from the buffer
-            byte[] response = Arrays.copyOfRange(buffer, 0, result);
-            String responseString = new String(response, 0, result);
+            byte[] response = Arrays.copyOfRange(buffer, 0, totalSize);
+            String responseString = new String(response, 0, totalSize);
             
             // check if the response is good
             if (!responseString.startsWith("HTTP/1.0 200")) {
@@ -175,7 +187,7 @@ public class HTTPClassLoader extends ClassLoader {
             
             // result - size will be the start of the class in the response
             // grab from there to the end. This is the class bytecode.
-            bytes = Arrays.copyOfRange(response, result - size, result);
+            bytes = Arrays.copyOfRange(response, totalSize - size, totalSize);
             
             //the class \/
             //System.out.println(new String(bytes, 0, bytes.length));
