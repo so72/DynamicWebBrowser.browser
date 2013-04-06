@@ -99,8 +99,6 @@ public class HTTPClassLoader extends ClassLoader {
             ex.printStackTrace();
         }
         
-        System.out.println("Asking for: " + classFile);
-        
         sendGetRequest(classFile);
         bytes = readResponse();
         

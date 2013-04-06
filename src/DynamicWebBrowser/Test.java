@@ -14,15 +14,17 @@ public class Test {
     public static void main(String args[]) {
         ProtocolFinder finder = new ProtocolFinder();
         
-        Protocol time = finder.findProtocol("time");
-        if (time != null) {
-            try {
-                System.out.println(time.execute(new URI("time")));
-            } catch (URISyntaxException ex) {
-                System.out.println("Invalid URI");
+        for (int i = 0; i < 2; i++) {
+            Protocol time = finder.findProtocol("time");
+            if (time != null) {
+                try {
+                    System.out.println(time.execute(new URI("time")));
+                } catch (URISyntaxException ex) {
+                    System.out.println("Invalid URI");
+                }
+            } else {
+                System.out.println("Protocol not implemented");
             }
-        } else {
-            System.out.println("Protocol not implemented");
         }
     }
 }

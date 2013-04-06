@@ -50,6 +50,7 @@ public class ProtocolFinder {
                 if (protocolClass != null) {
                     protocol = (Protocol) protocolClass.newInstance();
                 }
+                knownProtocols.put(protocolName, protocolClass);
             }
         } catch (InstantiationException e) {
             System.err.println("Failed to instantiate protocol");
