@@ -1,26 +1,31 @@
-Dynamic Web Browser - WIP
-=========================
+#Dynamic Web Browser - WIP
 
-Feel free to add notes to this file.
+##What still needs to be done:
+- [ ] We need a GUI
+- [ ] We need an HTTP protocol (again, should not be dynamically loaded)
+- [ ] We need all of that to work together
+- [ ] Anything else???
 
+
+##Feel free to add notes to this file.
 I'll layout what I think this project should look like,
 and hopefully split it into even work in the process.
 Feel free to take on any part you choose.
 
 The Browser part:
-- [ ] For now should just have a address bar and a 'go' button maybe we can add back/forward buttons later. Not a requirement.
-- [ ] Ability to display HTML
-- [ ] Gets a protocol from httpClassLoader
-- [ ] Calls execute on that protocol
-- [ ] Displays resulting HTML string
+- For now should just have a address bar and a 'go' button maybe we can add back/forward buttons later. Not a requirement.
+- Ability to display HTML
+- Gets a protocol from httpClassLoader
+- Calls execute on that protocol
+- Displays resulting HTML string
 
 The Protocols:
-- [ ] Has execute method that takes URI as parameter
-- [ ] returns an HTML string
-- [ ] http - located in the browser project (don't dynamically load it)
-- [x] time - simple
+- Has execute method that takes URI as parameter
+- returns an HTML string
+- http - located in the browser project (don't dynamically load it)
+- time - simple
 
 The Server part:
-- [x] Needs to respond to 'CLASS' and 'GET' requests
-- [x] Just serves class files
-- [x] Protocols are implemented here (except for http)
+- Needs to respond to 'CLASS' and 'GET' requests
+- Just serves class files
+- Protocols are implemented here (except for http)
