@@ -6,8 +6,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -119,13 +124,9 @@ public class DynamicWebBrowser {
                                 // not absolute (no scheme: provided assume http)
                                 // or http was specified
                                 // TODO: after http is implemented deal with this
-                                htmlString = "<html>\n"
-                                        + "<body>\n"
-                                        + "<h1>501 not implemented</h1>\n"
-                                        + "<p>" + url.getText() + " has not beed implemented yet</p>\n"
-                                        + "<p></p>\n"
-                                        + "</body>\n"
-                                        + "</html>\n";
+                                Protocol protocol = finder.findProtocol(uri.getScheme());
+                                htmlString = protocol.execute(uri);
+
                             } else {
                                 // otherwise a non http scheme was provided
                                 Protocol protocol = finder.findProtocol(uri.getScheme());
@@ -144,8 +145,9 @@ public class DynamicWebBrowser {
                             }
                             jEditorPane.setText(htmlString);
 
-                        } catch (URISyntaxException ex) {
-                            //Logger.getLogger(Calculator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        catch (URISyntaxException ex) {
+                            System.out.println("Bad URI");
                         }
                     }
                 });
