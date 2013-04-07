@@ -31,16 +31,16 @@ public class DynamicWebBrowser {
      *
      */
     public static void main(String[] args) {
-        
-        
+
+
         new DynamicWebBrowser();
     }
 
     public DynamicWebBrowser() {
-        
+
         final ProtocolFinder finder = new ProtocolFinder();
-        
-        
+
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // create jeditorpane
@@ -68,7 +68,7 @@ public class DynamicWebBrowser {
                         + "<body>\n"
                         + "<h1>Welcome!</h1>\n"
                         + "<h2>type a url above</h2>\n"
-                        + "<p>like \"http://localhost\" or \"time://localhost\"</p>\n"
+                        + "<p>like \"time:\\\" or \"time:\"</p>\n"
                         + "<p></p>\n"
                         + "</body>\n"
                         + "</html>\n";
@@ -106,12 +106,11 @@ public class DynamicWebBrowser {
                     public void actionPerformed(ActionEvent event) {
                         try {
                             String uriString = url.getText();
-                            
+
                             if (uriString.endsWith(":")) {
-                                System.out.println("ended with : ");
                                 uriString += "/";
                             }
-                            
+
                             URI uri = new URI(uriString);
 
                             String htmlString = "";
@@ -121,22 +120,28 @@ public class DynamicWebBrowser {
                                 // or http was specified
                                 // TODO: after http is implemented deal with this
                                 htmlString = "<html>\n"
-                                    + "<body>\n"
-                                    + "<h1>501 not implemented</h1>\n"
-                                    + "<p>http has not beed implemented yet</p>\n"
-                                    + "<p></p>\n"
-                                    + "</body>\n"
-                                    + "</html>\n";
+                                        + "<body>\n"
+                                        + "<h1>501 not implemented</h1>\n"
+                                        + "<p>" + url.getText() + " has not beed implemented yet</p>\n"
+                                        + "<p></p>\n"
+                                        + "</body>\n"
+                                        + "</html>\n";
                             } else {
                                 // otherwise a non http scheme was provided
-                                System.out.println("was absolute");
                                 Protocol protocol = finder.findProtocol(uri.getScheme());
-                                // TODO: if protocl is null return not implemented html
-                                htmlString = protocol.execute(uri);
+                                if (protocol == null) {
+                                    htmlString = "<html>\n"
+                                            + "<body>\n"
+                                            + "<h1>501 not implemented</h1>\n"
+                                            + "<p>" + url.getText() + " has not beed implemented yet</p>\n"
+                                            + "<p></p>\n"
+                                            + "</body>\n"
+                                            + "</html>\n";
+                                    jEditorPane.setText(htmlString);
+                                } else {
+                                    htmlString = protocol.execute(uri);
+                                }
                             }
-                                
-                            // TODO: set the window to this html instead of printing it
-                            System.out.println(htmlString);
                             jEditorPane.setText(htmlString);
 
                         } catch (URISyntaxException ex) {
