@@ -31,10 +31,16 @@ public class DynamicWebBrowser {
      *
      */
     public static void main(String[] args) {
+        
+        
         new DynamicWebBrowser();
     }
 
     public DynamicWebBrowser() {
+        
+        final ProtocolFinder finder = new ProtocolFinder();
+        
+        
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // create jeditorpane
@@ -99,22 +105,25 @@ public class DynamicWebBrowser {
                 go.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
                         try {
-                            
+                            URI uriFromAddress = new URI("");
                             String URI = url.getText();
                             if (URI.endsWith(":")) {
                                 System.out.println("ended with : ");
                                 URI += "/";
-                                URI uriFromAddress = new URI(URI);
-                                ProtocolFinder finder = new ProtocolFinder();
-                                finder.findProtocol(uriFromAddress.getScheme());
-                                
+                                uriFromAddress.resolve(URI);
+                                Protocol time = finder.findProtocol(uriFromAddress.getScheme());
+                                time.execute(uriFromAddress);
                             } else {
-                                URI uriFromAddress = new URI(url.getText());
+                                uriFromAddress.resolve(url.getText());
                                 if (uriFromAddress.isAbsolute()) {
                                     System.out.println("was absolute");
-                                    ProtocolFinder finder = new ProtocolFinder();
-                                    finder.findProtocol(uriFromAddress.getScheme());
+                                    Protocol time = finder.findProtocol(uriFromAddress.getScheme());
+                                    time.execute(uriFromAddress);
                                 }
+                                else {
+                                    System.out.println("bad URI");
+                                }
+                                   
                             }
                         } catch (URISyntaxException ex) {
                             //Logger.getLogger(Calculator.class.getName()).log(Level.SEVERE, null, ex);
