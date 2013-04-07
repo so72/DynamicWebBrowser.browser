@@ -44,7 +44,7 @@ public class DynamicWebBrowser {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // create jeditorpane
-                JEditorPane jEditorPane = new JEditorPane();
+                final JEditorPane jEditorPane = new JEditorPane();
 
                 // make it read-only
                 jEditorPane.setEditable(true);
@@ -137,7 +137,8 @@ public class DynamicWebBrowser {
                                 
                             // TODO: set the window to this html instead of printing it
                             System.out.println(htmlString);
-      
+                            jEditorPane.setText(htmlString);
+
                         } catch (URISyntaxException ex) {
                             //Logger.getLogger(Calculator.class.getName()).log(Level.SEVERE, null, ex);
                         }
