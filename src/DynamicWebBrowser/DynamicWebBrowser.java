@@ -105,26 +105,39 @@ public class DynamicWebBrowser {
                 go.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
                         try {
-                            URI uriFromAddress = new URI("");
-                            String URI = url.getText();
-                            if (URI.endsWith(":")) {
+                            String uriString = url.getText();
+                            
+                            if (uriString.endsWith(":")) {
                                 System.out.println("ended with : ");
-                                URI += "/";
-                                uriFromAddress.resolve(URI);
-                                Protocol time = finder.findProtocol(uriFromAddress.getScheme());
-                                time.execute(uriFromAddress);
-                            } else {
-                                uriFromAddress.resolve(url.getText());
-                                if (uriFromAddress.isAbsolute()) {
-                                    System.out.println("was absolute");
-                                    Protocol time = finder.findProtocol(uriFromAddress.getScheme());
-                                    time.execute(uriFromAddress);
-                                }
-                                else {
-                                    System.out.println("bad URI");
-                                }
-                                   
+                                uriString += "/";
                             }
+                            
+                            URI uri = new URI(uriString);
+
+                            String htmlString = "";
+
+                            if (!uri.isAbsolute() || uri.getScheme().equalsIgnoreCase("http")) {
+                                // not absolute (no scheme: provided assume http)
+                                // or http was specified
+                                // TODO: after http is implemented deal with this
+                                htmlString = "<html>\n"
+                                    + "<body>\n"
+                                    + "<h1>501 not implemented</h1>\n"
+                                    + "<p>http has not beed implemented yet</p>\n"
+                                    + "<p></p>\n"
+                                    + "</body>\n"
+                                    + "</html>\n";
+                            } else {
+                                // otherwise a non http scheme was provided
+                                System.out.println("was absolute");
+                                Protocol protocol = finder.findProtocol(uri.getScheme());
+                                // TODO: if protocl is null return not implemented html
+                                htmlString = protocol.execute(uri);
+                            }
+                                
+                            // TODO: set the window to this html instead of printing it
+                            System.out.println(htmlString);
+      
                         } catch (URISyntaxException ex) {
                             //Logger.getLogger(Calculator.class.getName()).log(Level.SEVERE, null, ex);
                         }
