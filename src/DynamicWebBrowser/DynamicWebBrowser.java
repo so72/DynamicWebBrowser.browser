@@ -6,13 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -36,15 +31,12 @@ public class DynamicWebBrowser {
      *
      */
     public static void main(String[] args) {
-
-
         new DynamicWebBrowser();
     }
 
     public DynamicWebBrowser() {
 
         final ProtocolFinder finder = new ProtocolFinder();
-
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -61,12 +53,12 @@ public class DynamicWebBrowser {
                 HTMLEditorKit kit = new HTMLEditorKit();
                 jEditorPane.setEditorKit(kit);
 
-//        // add some styles to the html
-//        StyleSheet styleSheet = kit.getStyleSheet();
-//        styleSheet.addRule("body {color:#000; font-family:times; margin: 4px; }");
-//        styleSheet.addRule("h1 {color: blue;}");
-//        styleSheet.addRule("h2 {color: #ff0000;}");
-//        styleSheet.addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
+                //add some styles to the html
+                //StyleSheet styleSheet = kit.getStyleSheet();
+                //styleSheet.addRule("body {color:#000; font-family:times; margin: 4px; }");
+                //styleSheet.addRule("h1 {color: blue;}");
+                //styleSheet.addRule("h2 {color: #ff0000;}");
+                //styleSheet.addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
 
                 // create some simple html as a string
                 String htmlString = "<html>\n"
@@ -123,10 +115,8 @@ public class DynamicWebBrowser {
                             if (!uri.isAbsolute() || uri.getScheme().equalsIgnoreCase("http")) {
                                 // not absolute (no scheme: provided assume http)
                                 // or http was specified
-                                // TODO: after http is implemented deal with this
-                                Protocol protocol = finder.findProtocol(uri.getScheme());
-                                htmlString = protocol.execute(uri);
-
+                                Http proto = new Http();
+                                htmlString = proto.execute(uri);
                             } else {
                                 // otherwise a non http scheme was provided
                                 Protocol protocol = finder.findProtocol(uri.getScheme());
@@ -145,8 +135,7 @@ public class DynamicWebBrowser {
                             }
                             jEditorPane.setText(htmlString);
 
-                        }
-                        catch (URISyntaxException ex) {
+                        } catch (URISyntaxException ex) {
                             System.out.println("Bad URI");
                         }
                     }
