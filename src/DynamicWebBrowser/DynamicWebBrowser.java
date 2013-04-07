@@ -112,13 +112,13 @@ public class DynamicWebBrowser {
 
                             String htmlString = "";
 
-                            if (!uri.isAbsolute() && uri.getScheme() == null) {
+                            if (uri.getScheme() == null) {
                                 // not absolute (no scheme: provided assume http)
                                 // or http was specified
                                 Http proto = new Http();
                                 uri = new URI("http://" + uriString);
                                 htmlString = proto.execute(uri);
-                            }else if (uri.isAbsolute() && uri.getScheme().equalsIgnoreCase("http")) {
+                            }else if (uri.getScheme().equalsIgnoreCase("http")) {
                                 // not absolute (no scheme: provided assume http)
                                 // or http was specified
                                 Http proto = new Http();
