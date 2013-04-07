@@ -2,9 +2,6 @@ package DynamicWebBrowser.protocols;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,8 +10,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -116,7 +111,7 @@ public class HTTPClassLoader extends ClassLoader {
     /**
      * Sends CLASS request to server asking if protocol is implemented
      * 
-     * @param classlName name of protocol to look for
+     * @param className name of protocol to look for
      * @return class file or null if not found
      */
     private void sendClassRequest(String className) {
